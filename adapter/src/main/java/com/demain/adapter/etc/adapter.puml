@@ -1,0 +1,30 @@
+@startuml
+class com.demain.adapter.MachineBoatAdapter {
+- MachineBoat boat
++ void row()
+}
+class com.demain.adapter.FishingBoatAdapter {
+- FishingBoat boat
++ void row()
+}
+class com.demain.adapter.FishingBoat {
+~ void sail()
+}
+class com.demain.adapter.Captain {
+- RowingBoat rowingBoat
+~ void row()
+}
+interface com.demain.adapter.RowingBoat {
+~ void row()
+}
+class com.demain.adapter.App {
++ {static} void main(String[])
+}
+class com.demain.adapter.MachineBoat {
+~ void sail()
+}
+
+
+com.demain.adapter.RowingBoat <|.. com.demain.adapter.MachineBoatAdapter
+com.demain.adapter.RowingBoat <|.. com.demain.adapter.FishingBoatAdapter
+@enduml
