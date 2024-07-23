@@ -1,12 +1,14 @@
 package com.demain.strategy.decorator.strategy;
 
-import com.demain.strategy.decorator.c.decorator.CStrategyDecorator;
+import com.demain.strategy.decorator.annotation.Decoratable;
+import com.demain.strategy.decorator.c.decorator.StrategyDecorator;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,9 +24,16 @@ public class QsnStrategyFactory implements InitializingBean, ApplicationContextA
         if (strategy == null) {
             throw new IllegalArgumentException("没有找到类型为 " + type + " 的策略处理器");
         }
-        // 如果是C类型的策略，则使用装饰者模式
-        if ("C".equals(type)) {
-            strategy = new CStrategyDecorator(strategy);
+        // 检查是否需要装饰
+        Decoratable decoratable = strategy.getClass().getAnnotation(Decoratable.class);
+        if (decoratable != null) {
+            Class<? extends StrategyDecorator> decoratorClass = decoratable.decorator();
+            try {
+                Constructor<? extends StrategyDecorator> constructor = decoratorClass.getConstructor(QsnStrategy.class);
+                strategy = constructor.newInstance(strategy);
+            } catch (Exception e) {
+                throw new RuntimeException("无法创建装饰器实例: " + decoratorClass.getName(), e);
+            }
         }
         return strategy;
     }
