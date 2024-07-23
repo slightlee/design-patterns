@@ -1,6 +1,6 @@
 package com.demain.strategy.decorator.controller;
 
-import com.demain.strategy.decorator.c.decorator.CStrategyDecorator;
+import com.demain.strategy.decorator.strategy.ExtendedQsnStrategy;
 import com.demain.strategy.decorator.strategy.QsnStrategy;
 import com.demain.strategy.decorator.strategy.QsnStrategyFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +22,9 @@ public class IndexController {
         System.out.println(msg + "--------" + msg1 + "-------" + msg2);
 
         QsnStrategy strategyC = qsnStrategyFactory.getStrategy("C");
-        if (strategyC instanceof CStrategyDecorator) {
+        if (strategyC instanceof ExtendedQsnStrategy) {
             String msg01 = strategyC.getMsg();
-            String msg02 = ((CStrategyDecorator) strategyC).getMsg2();
+            String msg02 = ((ExtendedQsnStrategy) strategyC).getMsg2();
             System.out.println("msg:" + "--------" + msg01 + "------" + msg02);
         }
         return "获取成功";
