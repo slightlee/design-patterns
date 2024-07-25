@@ -27,13 +27,13 @@ public class StrategyDecoratorPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(@Nullable Object bean, @Nullable String beanName) throws BeansException {
-        if (bean instanceof QsnStrategy) {
-            return processQsnStrategy((QsnStrategy) bean);
+        if (bean instanceof Strategy) {
+            return processStrategy((Strategy) bean);
         }
         return bean;
     }
 
-    private Object processQsnStrategy(QsnStrategy strategy) {
+    private Object processStrategy(Strategy strategy) {
         Decoratable decoratable = strategy.getClass().getAnnotation(Decoratable.class);
         if (decoratable != null) {
             Class<? extends StrategyDecorator> decoratorClass = decoratable.decorator();
@@ -46,7 +46,7 @@ public class StrategyDecoratorPostProcessor implements BeanPostProcessor {
         return strategy;
     }
 
-    private StrategyDecorator createDecorator(QsnStrategy strategy, Class<? extends StrategyDecorator> decoratorClass) throws Exception {
+    private StrategyDecorator createDecorator(Strategy strategy, Class<? extends StrategyDecorator> decoratorClass) throws Exception {
         Constructor<?>[] constructors = decoratorClass.getConstructors();
         for (Constructor<?> constructor : constructors) {
             if (isSuitableConstructor(constructor)) {
@@ -63,7 +63,7 @@ public class StrategyDecoratorPostProcessor implements BeanPostProcessor {
         Class<?>[] parameterTypes = constructor.getParameterTypes();
         boolean hasStrategy = false;
         for (Class<?> paramType : parameterTypes) {
-            if (QsnStrategy.class.isAssignableFrom(paramType)) {
+            if (Strategy.class.isAssignableFrom(paramType)) {
                 hasStrategy = true;
             } else {
                 try {
@@ -76,10 +76,10 @@ public class StrategyDecoratorPostProcessor implements BeanPostProcessor {
         return hasStrategy;
     }
 
-    private Object[] resolveConstructorArguments(Class<?>[] parameterTypes, QsnStrategy strategy) {
+    private Object[] resolveConstructorArguments(Class<?>[] parameterTypes, Strategy strategy) {
         Object[] args = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) {
-            if (QsnStrategy.class.isAssignableFrom(parameterTypes[i])) {
+            if (Strategy.class.isAssignableFrom(parameterTypes[i])) {
                 args[i] = strategy;
             } else {
                 args[i] = applicationContext.getBean(parameterTypes[i]);
