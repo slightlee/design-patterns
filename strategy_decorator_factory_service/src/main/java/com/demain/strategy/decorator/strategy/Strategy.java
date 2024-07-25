@@ -6,6 +6,7 @@ package com.demain.strategy.decorator.strategy;
  * 所有策略接口都需继承此接口
  * eg: QsnStrategy ...
  */
-public interface Strategy {
+public interface Strategy<T> {
 
+    T type();
 }

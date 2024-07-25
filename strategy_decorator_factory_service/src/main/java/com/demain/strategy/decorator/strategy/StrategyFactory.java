@@ -10,23 +10,26 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class QsnStrategyFactory implements InitializingBean, ApplicationContextAware {
+public class StrategyFactory implements InitializingBean, ApplicationContextAware {
 
-    private static final Map<String, QsnStrategy> STRATEGY_MAP = new ConcurrentHashMap<>();
+    private static final Map<Object, Strategy<?>> STRATEGY_MAP = new ConcurrentHashMap<>();
 
     private ApplicationContext applicationContext;
 
-    public QsnStrategy getStrategy(String type) {
-        QsnStrategy strategy = STRATEGY_MAP.get(type);
+    public <T extends Strategy<?>> T getStrategy(Object type, Class<T> strategyType) {
+        Strategy<?> strategy = STRATEGY_MAP.get(type);
         if (strategy == null) {
             throw new IllegalArgumentException("没有找到类型为 " + type + " 的策略处理器");
         }
-        return strategy;
+        if (!strategyType.isInstance(strategy)) {
+            throw new IllegalArgumentException("策略类型不匹配");
+        }
+        return strategyType.cast(strategy);
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        applicationContext.getBeansOfType(QsnStrategy.class).values().forEach(
+        applicationContext.getBeansOfType(Strategy.class).values().forEach(
                 handler -> STRATEGY_MAP.put(handler.type(), handler)
         );
     }
