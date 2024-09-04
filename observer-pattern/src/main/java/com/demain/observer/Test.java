@@ -9,9 +9,13 @@ public class Test {
         // 创建观察者
         SmsSender smsSender = new SmsSender();
         AppSender appSender = new AppSender();
-        bankAccount.addSender(smsSender);
-        bankAccount.addSender(appSender);
-        // 改变被观察者的状态
+        //创建发布者
+        BankPublisher publisher = new BankPublisher();
+        publisher.addSender(smsSender);
+        publisher.addSender(appSender);
+        //被观察者绑定publish
+        bankAccount.setPublisher(publisher);
+        //改变被观察者的状态
         bankAccount.transfer();
     }
 
