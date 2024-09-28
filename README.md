@@ -13,4 +13,5 @@
 | strategy_decorator_factory         | 策略+装饰器+工厂          |
 | strategy_decorator_factory_service | 策略+装饰器+工厂+bean调用 |
 | observer-pattern                   | 观察者模式                |
+| observer-pattern-spring            | 观察者模式(发布订阅模式)  |
 
